@@ -1,2 +1,3 @@
 # aws-certification-preparation
-# aws-certification-preparation
+
+AWS Certification notes and materials.

@@ -21,9 +21,89 @@ Choices Analysis:
 3. **Correct** - ELB can have a security group assigned which can be configured with Allow rules for Customer's IP addresses
 4. **Incorrect** - NACL is stateless if you deny all outbound traffic the return traffic will be dropped
 
+_Quick refresher:_
+
+- ELB can be assigned a Security Group
+- ELB can be configured to forward the client/initiator's information including source IP address using `X-Forwarded-For` headers
+
+#### Question 2
+
+You are the AWS architect at YCDIT2, Inc. Your client has a **VPC with public and private subnets** created by the **VPC wizard**. The **VPC CIDR is 10.0.0.0/16**. The **public subnet is 10.0.1.0/24**. The architecture you put together includes deploying a web server in the public subnet, receiving **HTTP traffic on port 80**; it also includes a Database server tier in the **private subnet receiving traffic on port 3306**. The client SysOps is configuring a **security group for the public subnet** called **WebSG**, and the private subnet's security group called **DbSG**.
+
+Which of the below entries is required in the web server security group?
+1. **Destination: DB Security group ID (DBSG), Port: 3306, Direction: Outbound**
+2. Destination: 0.0.0.0/0, Port: 80, Direction: Outbound
+3. Source 10.0.1.0/24, Port: 3306, Direction: Inbound
+4. Source 10.0.0.0/16, Port: 80, Direction Inbound
+
+Choices Analysis:
+
+1. **Correct** - This allows the DbSG to be the destionation on port 3306, it allows traffic destined to instances in the DbSG with a destination port 3306 (DB port)
+2. **Incorrect** - The web layer will be receiving HTTP traffic from the internet, not sending it out to the Internet
+3. **Incorrect** - CIDR 10.0.1.0/24 was not mentioned in the question body.
+4. **Incorrect** - HTTP traffic will not be received on WebSG from the public subnet
+
+_Quick refresher:_
+- You can use Security Group names as the source of destination in other security group rules
+- You can use the security group name as the source in its own inbound security group rules
+- Security groups are directional and can use allow rules only
+- A security group set of rules ends with an implicit deny any
+
+#### Question 3
+
+Which of the below statements is true for **any VPC security group**, by default, **when it is created**?
+
+1. All inbound traffic rule will be explicitly denied
+2. All inbound traffic is allowed by default
+3. **All outbound traffic is allowed by default**
+4. Traffic to the internet gateway is allowed by default
+
+Choices Analysis:
+
+1. **Incorrect** - Security groups do not have explicity deny
+2. **Incorrect** - All inbound traffic is denied by default in a Custom security group
+3. **Correct** - By default there is a 0.0.0.0/0 on All protocols/ports allowed by default - outbound
+4. **Incorrect** - Security Group do not have such a default rule
+
+_Quick refresher:_
+
+- Custom security groups in a VPC will always
+    - No inbound rules - basically all inbound traffic is denied by default
+    - All outbound traffic is allowed by default
+- Default security groups in a default or custom VPC, will have: 
+    - Inbound rules allowing Instances assigned the same security group to talk to one another
+    - All outbound traffic is allowed  
+- Security groups have allow only rules, no **explicit deny rules**
+- A security group set of rules ends with an **implicit deny all**
+
+#### Question 4
+
+You created a **VPC with both public and private subnets**. The **VPC CIDR is 10.0.0.0/16**. The **private subnet is 10.0.1.0/24** and the **public subnet is 10.0.0.0/24**. The goal is to host a web server int the public subnet **receiving traffic on port 80**, and a DB server in the **private subnet receiving traffic on port 3306**. The database server will require in-frequent Internet access for patching and updates. When you are configuring the **security group of the NAT instance (NATSG)**, which of the below mentioned entries is not required?
+
+1. Allow Source: 10.0.1.0/24, Direction: Inbound, Port: 80
+1. Allow Destination: 0.0.0.0/0, Direction: Outbound, Port: 80
+1. **Allow Source: 10.0.0.0/24, Direction: Inbound, Port: 80**
+1. Allow Destination: 0.0.0.0/0, Direction: Outbound, Port: 443
+
+Choices Analysis:
+
+1. **Correct** - In order to allow private subnet request to NAT
+2. **Correct** -In order to NAT request to the Internet
+3. **Incorrect** - Public Subnet does not need use NAT
+4. **Correct** - In order to NAT request to the Internet using SSL/TLS
+
+_Quick refresher:_
+- Security groups have inbound and outbound rules
+- Security groups can only have Allow rules
+- Draw in your mind, to understand the scenario better
+- Focus on Inbound and Outbound traffic
+- Private subnet instances will want to access websites on the internet (HTTP or HTTPs)
+- Internet destinations when are not listed has to have 0.0.0.0/0 for all internet destinations
+- NAT instances serves the private subnet's instances and not the public subnet's instances
+
 #### Question 7
 
-You are the AWS architect at YCDIT2, Inc. you have been tasked to design and launch an EC2 NAT instance in a public subnet in your client's VPC. After creating and successfully testing the NAT instance. You have also updated your private subnet's rout table such that the NAT device is the target for traffic destined to the Internet. However, the private subnet EC2 instances are still not able to connect to the Internet for updates and patch download.
+You have been tasked to design and launch an EC2 NAT instance in a public subnet in your client's VPC. After creating and successfully testing the NAT instance. You have also updated your private subnet's rout table such that the NAT device is the target for traffic destined to the Internet. However, the private subnet EC2 instances are still not able to connect to the Internet for updates and patch download.
 
 Which of the following steps could be a possible reason for this problem?
 

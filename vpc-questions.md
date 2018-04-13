@@ -1,9 +1,8 @@
 # AWS Certified Solutions Architect
 
-## Preparação para a certificação
+## VPC Questions
 
-
-#### Question 1
+#
 
 What can you do to ensure that only a specific list of Internet IP addresses can access your web tier, of two tier application you are hosting at AWS VPC. Your web servers will be served by an Internet-facing Elastic Load Balancer (ELB).
 
@@ -26,7 +25,7 @@ _Quick refresher:_
 - ELB can be assigned a Security Group
 - ELB can be configured to forward the client/initiator's information including source IP address using `X-Forwarded-For` headers
 
-#### Question 2
+#
 
 You are the AWS architect at YCDIT2, Inc. Your client has a **VPC with public and private subnets** created by the **VPC wizard**. The **VPC CIDR is 10.0.0.0/16**. The **public subnet is 10.0.1.0/24**. The architecture you put together includes deploying a web server in the public subnet, receiving **HTTP traffic on port 80**; it also includes a Database server tier in the **private subnet receiving traffic on port 3306**. The client SysOps is configuring a **security group for the public subnet** called **WebSG**, and the private subnet's security group called **DbSG**.
 
@@ -49,7 +48,7 @@ _Quick refresher:_
 - Security groups are directional and can use allow rules only
 - A security group set of rules ends with an implicit deny any
 
-#### Question 3
+#
 
 Which of the below statements is true for **any VPC security group**, by default, **when it is created**?
 
@@ -76,7 +75,7 @@ _Quick refresher:_
 - Security groups have allow only rules, no **explicit deny rules**
 - A security group set of rules ends with an **implicit deny all**
 
-#### Question 4
+#
 
 You created a **VPC with both public and private subnets**. The **VPC CIDR is 10.0.0.0/16**. The **private subnet is 10.0.1.0/24** and the **public subnet is 10.0.0.0/24**. The goal is to host a web server int the public subnet **receiving traffic on port 80**, and a DB server in the **private subnet receiving traffic on port 3306**. The database server will require in-frequent Internet access for patching and updates. When you are configuring the **security group of the NAT instance (NATSG)**, which of the below mentioned entries is not required?
 
@@ -101,7 +100,7 @@ _Quick refresher:_
 - Internet destinations when are not listed has to have 0.0.0.0/0 for all internet destinations
 - NAT instances serves the private subnet's instances and not the public subnet's instances
 
-#### Question 5
+#
 
 Your client deployed a **three-tier web application** in a VPC with a **CIDR block of 10.0.0.0/27**. The client launched **four web servers behind an ELB**, **four application servers**, **two database servers**, and **two NAT instances** are already deployed in the VPC across two AZ's, for a total of **twelve EC2 instances**. Route53 is used as the DNS. When trying **to double the existing fleet of web/app instances** to keep up with the gradual increase in web traffic, not all the required instances were created/launched successfully.
 
@@ -126,7 +125,7 @@ _Quick refresher:_
 - The subnet is bound to an AZ, and can not stretch between AZ's
 - In a /28 subnet in a VPC, you actually have only 11 IP addresses available for instances and ELB
 
-#### Question 7
+#
 
 You have been tasked to design and launch an EC2 NAT instance in a public subnet in your client's VPC. After creating and successfully testing the NAT instance. You have also updated your private subnet's rout table such that the NAT device is the target for traffic destined to the Internet. However, the private subnet EC2 instances are still not able to connect to the Internet for updates and patch download.
 
@@ -145,7 +144,7 @@ Choices Analysis:
 3. **Incorrect** - NAT Instance does PAT function and this is enough to do the job required
 4. **Correct** - This is one possible reason (besides checking the Security Groups and NACLs)
 
-#### Question 8
+#
 
 At which EC2 instance states can the source/destination check attribute be changed? (Choose two):
 
@@ -159,7 +158,8 @@ At which EC2 instance states can the source/destination check attribute be chang
 - c) 2 and 3 >> não
 - d) 1 and 4 >> não
 
-#### Question 9:
+#
+
 
 Using the VPC wizard, you have created a VPC with CIDR 10.0.0.0/16 with a VPN-only private subnet and Hardware VPN Access connection. You need to connect to an instance in the private subnet over SSH.
 
@@ -176,7 +176,8 @@ Choices Analysis:
 3. **Incorrect** - NAT instances are not for Internet Initiated connections
 4. **Incorrect** - The VPC has not been configured with a public subnet for Internet Access
 
-#### Question 10:
+#
+
 You have created a VPC with CIDR 10.0.0.0/24. The VPC has two subnets: public (10.0.0.0/25) and private (10.0.0.128/25). For an anticipated project you want to increase the CIDR range your VPC CIDR block, How can you do this?
 
 1. Change the subnet sizes to /28 subnets, then you will have more room to grow your VPC CIDR
@@ -190,3 +191,161 @@ Choices Analysis:
 3. **Correct** - You can add additional VPC CIDR blocks, but can't change the existing one
 4. **Incorrect** - You still can't change the VPC CIDR
 
+#
+
+After creating a **VPC with CIDR 10.0.0.0/16**. with the lack of proper architecture, The AWS SysOps admin created one large **subnet of CIDR 10.0.0.0/16**. later on, another subnet was needed to host another tier of an application being deployed. The admin is **trying to create another subnet of CIDR 10.0.1.0/24**.
+
+Can she create the second subnet without disrupting services to the first subnet?
+
+1. Yes, she can configure the new subnet, and AWS will automatically adjust the VPC subnets so both can exist.
+2. Yes, Edit the fist subnet from the console to make room for the second one
+3. **No, It is not possible to create a second subnet as the intended one overlaps with the existing one.**
+4. Yes, Delete the VPC and create a new one
+
+_Choice Analysis_:
+
+1. **Incorrect** - AWS VPC does not adjust subnets automatically
+2. **Incorrect** - You can not adjust subnet size after creating it, you can delete it and create another
+3. **Correct** - The first one took all the VPC CIDR block, hence, any other one will overlapping with it
+4. **Incorrect** - Although this would work, but this would cause a major impact to the services/apps
+
+**Quick Refresh**:
+- You cannot create overlapping IP address subnet in a VPC
+- All VPC subnets must be no-overlapping
+- If you create one subnet equal in size to the VPC CIDR block, you will not be able to crete any other subnet in the VPC because any other one that belongs to the CIDR block will overlap with the first one
+    - Solution - delte the one you created, and then carefully design and deploy your IP address scheme
+
+#
+
+Your AWS SysOps administrator created a **VPC with a public subnet**. He created and attached an **Internet Gateway to the VPC**, and launched an **EC2 instance with a public IP** in the subnet. He also **created a security group** for the EC2 instance. When **trying to connect to the EC2 instance from the Internet**, he was not able to. From the statements below, which could be a possible reason for his inability to connect?  **(Choose 2)**
+
+1. There is no entry in the route table pointing to the internet gateway as a Target
+2. The admin did not configure the security group after he created it
+3. The security group is denying any outbound traffic to the Internet
+4. The admin forgot to create a NACL for the EC2 instance
+
+Options:
+
+1. 3 and 4
+2. **1 and 2**
+3. 1 and 3
+4. 2 and 3
+
+_Choice Analysis_:
+- **Correct** - For the subnet to the public, an destination: 0.0.0.0/0 pointing at the IGW must be present in the route table of the subnet hosting the EC2 instance
+- **Correct** - Custom (non-default) security group would not have SSH allowed inbound
+- **Incorrect** - Security groups alwasy allow outbound traffic by default
+- **Incorrect** - Default NACL would apply in this case, which allows all inbound/outbound
+
+#
+
+You created **a subnet in a custom VPC** and launched **an EC2 instance** in that subnet. During the EC2 instance creation, using AWS console, **you did not choose the option to assign a public IP address to your instance**. This instance now **needs access to the Internet**, but it **has no public IP address**.
+
+How would you solve this internet connectivity issue for this EC2 instance?
+
+1. The instance will always have a public DNS attached to the instance by default
+2. Allocate and attach an Elastic IP directly to the instance
+3. The instance would not launch if the public IP is not assigned
+4. **Create an internet gateway, attach it to the VPC, do the needed route table configuration for a public subnet. Adjust security group, and NACLs configurations to facilitate this, and finally, attach an elastic IP to the instance to connect to the Internet**
+
+_Choice Analysis_:
+1. **Incorrect** - This depends on the instance, how many interfaces, public IP assigned or not.. etc
+2. **Incorrect** - Public and Elastic IP addresses are configured on the IGW and NAT'ed to the Instance's private IPv4 address
+3. **Incorrect** - Instances can launch in Private subnets without a public IP
+4. **Correct** - These are the steps needed to allow traffic to the Internet
+
+**Quick Refresher**:
+- In order for an instance to be access or access the Internet:
+    - It has to be in a public subnet with a Public or Elastic IP
+        - A public Subnet is a subnet created which has:
+            - A route table with an Entry to an Internet Gateway
+            - The Internet Gateway must be attached to the VPC
+            - Security group and NACL must allow the traffic as necessary
+
+#
+
+Your client plans to **connect their Data Center to their AWS VPC** in preparation for an application launch in **few months**. The application they are launching is chatty and has components in AWS and in the data center, and **will be hosted in private AWS subnets in their AWS VPC**. It also **requires bandwidth and latency guarantees at all times**. The solution has to be **fault tolerant**. Which connectivity method would you recommend for them?
+
+1. One VPN connection with two tunnels between one Customer Gateway and one VGW router on AWS side
+2. Two Public VIFs over two Direct connect connections. From two Customer routers to two different DX routers
+3. **Two Direct connect connections using two Customer routers and two private VIFs to two different Direct connect routers**
+4. One direct connect connection with one private VIF, and a backup VPN connection from two customer routers
+
+**Important question points**:
+- Application requires bandwidth and latency guarantees
+- Application will be hosted in private subnets in the VPC
+- Solution must be fault tolerant
+- Application will launch in few months (They have time)
+- Single choice
+
+_Choices Analysis_:
+- 1. **Incorrect** - VPN will not guarantee bandwidth and latency, it is Internet based
+- 2. **Incorrect** - The application will be hosted in private subnets, you need private VIF
+- 3. **Correct** - 
+- 4. **Incorrect** - VPN backup will not provide bandwidth and latency guarantees
+
+#
+
+Your client has a **multi AZ infrastructure on AWS**, and plans , in few months, to have a centralized, custom, dashboard **in the client’s data center**. The dashboard will need to interact with the multi AZ infrastructure. Data from the Multi AZ will be pulled from the data center. **Latency and performance (bandwidth) are key**. The solution needs to be up and running **within few months**.
+
+How would you architect the solution?
+
+1. Use redundant VPN connections to two VGW routers in the region, this should give you access to the infrastructure in all AZs
+2. **Use direct connect connection to the client VPC, as this will provide access to all AZs in the region, and will also provide better bandwidth and lower latency**
+3. Use one direct connect connection from the data center to each AZ in the region
+4. You cannot interact with multiple AZs from one location
+
+**Important question points**:
+- Multi AZ infrastructure on AWS that will be connected to the client daa center
+- Time frame is few months
+- Solution must allow the data center to pull data from multiple AZs
+- Requires bandwidth and latency guarantees
+
+_Choices Analysis_:
+1. **Incorrect** - VPN will not guarantee bandwidth and latency, it is Internet based
+2. **Correct** - 
+3. **Incorrect** - You do not need a DX connection per AZ
+4. **Incorrect** - You can
+
+#
+
+Using **AWS direct connection, with public and private VIFs** you can: (Choose 3)
+
+1. Connect to AWS services over the private VIF
+2. Connect to your private VPC subnets over the public VIF
+3. **Connect to your private VPC subnets over the private VIF, and to Public AWS services over the public VIF**
+4. Substitute your internet connection at your DC with AWS’s public Internet through the use of a NAT gateway in your VPC
+5. **Once connected to your VPC through Direct conect you can connect to all AZs within the region**
+6. **Using IPSec VPN you can connect over the public VIF to remote AWS regions as well**
+
+Options: 
+1. 1, 2 and 3
+2. 3, 4 and 5
+3. **3, 5 and 6**
+4. 2, 3 and 4
+
+_Choice Analysis_:
+1. **Incorrect** - This can be done over the public VIF
+2. **Incorrect** - This can be done over the private VIF
+3. **Correct** - 
+4. **Incorrect** - You can't access the AWS internet through the Direct Connect Connection
+5. **Correct** - 
+6. **Correct** - 
+
+**Quick refresher**:
+- DX is a direct connection (not internet based) and **provides for higher speeds (bandwidth), less latency and higher performance** than Internet
+- A Virtual Interface (VIF) is basically a 802.1Q VLAN mapped from the customer router to the Direct Connect router
+- You need one private VIF to connect to your private VPC subnets, and one public VIF to connect your AWS public services
+- You **CANNOT** establish layer 2 over your DX connection
+- You **CANNOT** use a NAT instance/gateway in your VPC over the direct connect connection
+
+#
+
+Your company has peered two VPCs in the same region, VPC-A and VPC-B. Moreover, your company’s HQ is connected to VPC-A using a VPN connection. You want to make this setup more fault tolerant, and ensure that company HQ has connectivity to VPC-A at all times.
+
+How can you architect this solution quickly and cost effectively?
+
+1. Peer the corporate network to VPC-B
+2. Connect Corporate network to VPC-B by a VPN connection such that it has another path to VPC-A
+3. Configure a second VPN connection between HQ and VPC-A from another customer gateway at the HQ
+4. Configure a second VPC peering between VPC-A and VPC-B
